@@ -1,21 +1,22 @@
-(*************************************************************************                                                                      *
-									 *                       MASTER STL M1 anne'e 2005/06                   *
-									 *                                                                      *
-									 *                     Cours Compilation Avanceels                      *
-									 *                                                                      *
-									 *                       Compilation -> Langage intermediaire           *
-									 *                                                                      *
-									 *                         partie de ml2java                            *
-									 *                                                                      *
-									 ************************************************************************
-									 *                                                                      *
-									 *   prodjava.ml  : traducteur LI_instr -> texte Java                   *
-									 *                                                                      *
-									 *   version : 0.1           12/04/06                                   *
-									 *                                                                      *
-									 *   auteur : Emmanuel Chailloux                                        *
-									 *                                                                      *
-************************************************************************)
+(************************************************************************
+ *                                                                      *
+ *                       MASTER STL M1 anne'e 2005/06                   *
+ *                                                                      *
+ *                     Cours Compilation Avanceels                      *
+ *                                                                      *
+ *                       Compilation -> Langage intermediaire           *
+ *                                                                      *
+ *                         partie de ml2java                            *
+ *                                                                      *
+ ************************************************************************
+ *                                                                      *
+ *   prodjava.ml  : traducteur LI_instr -> texte Java                   *
+ *                                                                      *
+ *   version : 0.1           12/04/06                                   *
+ *                                                                      *
+ *   auteur : Emmanuel Chailloux                                        *
+ *                                                                      *
+ ************************************************************************)
 
 open Types;;
 open Typeur;;
@@ -54,10 +55,10 @@ let build (s,equiv)  =
 
 initial_special_env := 
   List.map build [
-    "hd","MLhd_real";
-    "tl","MLtl_real";
-    "fst","MLfst_real";
-    "snd","MLsnd_real"
+    "hd","MLhdPrimary";
+    "tl","MLtlPrimary";
+    "fst","MLfstPrimary";
+    "snd","MLsndPrimary"
   ];;
 
 
@@ -118,14 +119,14 @@ let out_after  (fr,sd,nb) =
 let header_main  s = 
   List.iter out 
     ["/**\n";
-     " *  "^ s ^ ".c" ^ " engendre par ml2c \n";
+     " *  "^ s ^ ".c" ^ " produced by ml2c \n";
      " */\n";
-     "#include \"runtime.h\"\n"]
+     "#include \<runtime.h\>\n"]
 ;;
 
 let footer_main  s = 
   List.iter out
-    ["// fin du fichier " ^ s ^ ".c\n"]
+    ["// end of file " ^ s ^ ".c\n"]
 ;;
 
 let header_one  s = 
@@ -159,33 +160,33 @@ let footer_three  s =
 (* on recuoere le  type pour une declaration precise *)
 
 let string_of_const_type ct = match ct with   
-    INTTYPE    -> "MLvalue * "
-  | FLOATTYPE  -> "MLvalue * "
-  | STRINGTYPE -> "MLvalue * "
-  | BOOLTYPE   -> "MLvalue * "
-  | UNITTYPE   -> "MLvalue * "
+    INTTYPE    -> "MLvalue* "
+  | FLOATTYPE  -> "MLvalue* "
+  | STRINGTYPE -> "MLvalue* "
+  | BOOLTYPE   -> "MLvalue* "
+  | UNITTYPE   -> "MLvalue* "
 ;;
 
 let rec string_of_type typ = match typ with 
     CONSTTYPE t -> string_of_const_type t
-  | ALPHA    ->  "MLvalue * " 
-  | PAIRTYPE -> "MLvalue * "
-  | LISTTYPE -> "MLvalue * "
-  | FUNTYPE  -> "MLvalue * "
-  | REFTYPE  -> "MLValue * "
+  | ALPHA    ->  "MLvalue* " 
+  | PAIRTYPE -> "MLvalue* "
+  | LISTTYPE -> "MLvalue* "
+  | FUNTYPE  -> "MLvalue* "
+  | REFTYPE  -> "MLValue* "
 ;;
 
 
 let prod_global_var_glob instr = match instr with
-    VAR (v,t) -> out_start ("MLvalue * "^(*(string_of_type t)*)v^";") 1 
+    VAR (v,t) -> out_start ("MLvalue* "^(*(string_of_type t)*)v^";") 1 
   | FUNCTION (ns,t1,ar,(p,t2), instr) ->
-    out_start ("MLvalue * "^ns^";") 1
+    out_start ("MLvalue* "^ns^";") 1
   | _ -> ()
 ;;
 
 let prod_global_var_init instr = match instr with
     FUNCTION (ns,t1,ar,(p,t2), instr) ->
-      out_start (ns^" = new_MLfun(NULL, "^(string_of_int ar)^", invoke_MLfun_"^ns^");") 1
+      out_start (ns^" = newMLfun(NULL, "^(string_of_int ar)^", invoke_MLfun_"^ns^");") 1
   | _ -> ()
 ;;
 
@@ -202,16 +203,16 @@ let get_param_type lv =
 
 
 let prod_const c = match c with 
-    INT i -> out ("new_MLint("^(string_of_int i)^")")
-  | FLOAT f -> out ("new_MLdouble("^(string_of_float f)^")")
-  | BOOL b  -> out ("new_MLbool("^(if b then "1" else "0")^")")
-  | STRING s -> out ("new_MLstring("^"\""^s^"\""^")")
+    INT i -> out ("newMLint("^(string_of_int i)^")")
+  | FLOAT f -> out ("newMLdouble("^(string_of_float f)^")")
+  | BOOL b  -> out ("newMLbool("^(if b then "1" else "0")^")")
+  | STRING s -> out ("newMLstring("^"\""^s^"\""^")")
   | EMPTYLIST -> out ("MLnil")
   | UNIT ->      out ("MLlrp")
 ;;
 
 let rec prod_local_var (fr,sd,nb) (v,t) = 
-  out_start ("MLvalue * "(*(string_of_type t)*)^v^";") nb;;
+  out_start ("MLvalue* "(*(string_of_type t)*)^v^";") nb;;
 
 let rec prod_instr (fr,sd,nb) instr  = match instr with 
     CONST c -> out_before (fr,sd,nb);
@@ -279,7 +280,7 @@ let fun_header fn cn  =
 
 let prod_invoke cn  ar = 
   List.iter out_line 
-    ["  MLvalue * invoke_"^cn^"(MLvalue * f, MLvalue * MLparam){";
+    ["  MLvalue* invoke_"^cn^"(MLvalue* f, MLvalue* MLparam){";
      "    if (f->MLfun.counter == (f->MLfun.nbparams-1)) {"
     ];
 
@@ -292,7 +293,7 @@ let prod_invoke cn  ar =
   List.iter out_line 
     ["    }";
      "    else {";
-     "      MLvalue * l = new_MLfun(f, f->MLfun.counter+1,NULL);";
+     "      MLvalue* l = newMLfun(f, f->MLfun.counter+1,NULL);";
      "      MLaddenv(l,MLparam); return l;";
      "    }";
      "  }"
@@ -300,9 +301,9 @@ let prod_invoke cn  ar =
 ;;
 
 let prod_invoke_fun cn ar t lp instr = 
-  out_start ("MLvalue * invoke_real_"^cn^"(") 1;
-  out ("MLvalue * "^(List.hd lp));
-  List.iter (fun x -> out (", MLvalue * "^x)) (List.tl lp);
+  out_start ("MLvalue* invoke_real_"^cn^"(") 1;
+  out ("MLvalue* "^(List.hd lp));
+  List.iter (fun x -> out (", MLvalue* "^x)) (List.tl lp);
   out_line ") {";
   prod_instr (true,"",2) instr;
   
@@ -319,7 +320,7 @@ let prod_fun instr = match instr with
       out_line "";
       prod_invoke class_name ar;
       out_line "";           
-      out_line ("// fin de la fonction "^class_name)
+      out_line ("// end of function "^class_name)
 	
 	
   |  _ -> ()

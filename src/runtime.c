@@ -26,14 +26,14 @@ MLvalue* newMLint(int v)
 {
   MLvalue* r = (MLvalue*)malloc(sizeof(MLvalue));
   r->type    = MLINT;
-  r->MLint   = x;
+  r->MLint   = v;
   return r;
 }
 
 MLvalue* newMLdouble(double v)
 {
   MLvalue* r  = (MLvalue*)malloc(sizeof(MLvalue));
-  r->type     = MLdouble;
+  r->type     = MLDOUBLE;
   r->MLdouble = v;
   return r;
 }
@@ -41,7 +41,7 @@ MLvalue* newMLdouble(double v)
 MLvalue* newMLbool(int v)
 {
   MLvalue* r = (MLvalue*)malloc(sizeof(MLvalue));
-  r->type    = MLbool;
+  r->type    = MLBOOL;
   r->MLbool  = v;
   return r;
 }
@@ -49,7 +49,7 @@ MLvalue* newMLbool(int v)
 MLvalue* newMLstring(char* s)
 {
   MLvalue* r  = (MLvalue*)malloc(sizeof(MLvalue));
-  r->type     = MLstring;
+  r->type     = MLSTRING;
   r->MLstring = s;
   return r;
 }
@@ -57,10 +57,10 @@ MLvalue* newMLstring(char* s)
 MLvalue* newMLfun(MLvalue *f, int c, MLvalue* (*invoke)(MLvalue*, MLvalue*))
 {
   MLvalue* r = (MLvalue*)malloc(sizeof(MLvalue));
-  r->type    = MLfun;
+  r->type    = MLFUN;
   int i;
   if(f){
-    r->MLfun.nbparams = f->MLfun.nb.params;
+    r->MLfun.nbparams = f->MLfun.nbparams;
     r->MLfun.counter  = c;
     r->MLfun.env      = (MLvalue**)malloc(sizeof(MLvalue*));
     for(i=0; i<c; i++)
@@ -70,7 +70,7 @@ MLvalue* newMLfun(MLvalue *f, int c, MLvalue* (*invoke)(MLvalue*, MLvalue*))
 	     f->MLfun.counter*(sizeof(MLvalue)));
     r->MLfun.invoke = f->MLfun.invoke;
   } else {
-    r->MLfun.nbparams = counter;
+    r->MLfun.nbparams = c;
     r->MLfun.counter  = 0;
     r->MLfun.env      = NULL;
     r->MLfun.invoke   = invoke;
@@ -90,7 +90,7 @@ MLvalue* newMLpair(MLvalue* n1, MLvalue* n2)
 MLvalue* newMLlist(MLvalue* v, MLvalue* l)
 {
   MLvalue* r       = (MLvalue*)malloc(sizeof(MLvalue));
-  r->type          = MLlist;
+  r->type          = MLLIST;
   r->MLlist        = (MLList*)malloc(sizeof(MLList));
   r->MLlist->MLcar = v;
   r->MLlist->MLcdr = l;
@@ -138,6 +138,7 @@ MLvalue* MLdivint(MLvalue* x, MLvalue* y)
 MLvalue* MLequal(MLvalue* a, MLvalue* b)
 {
   MLvalue* r = (MLvalue*)malloc(sizeof(MLvalue));
+  MLvalue *v1, *v2; /* for some cool usage */
   r->type    = MLBOOL;
   switch( a->type ){
   case MLINT :
@@ -153,11 +154,11 @@ MLvalue* MLequal(MLvalue* a, MLvalue* b)
     r->MLbool = (strcmp(a->MLstring, b->MLstring) == 0);
     break;
   case MLPAIR :
-    MLvalue* fst = MLequal(a->MLpair.MLfst, y->MLpair.MLfst);
-    MLvalue* snd = MLequal(a->MLpair.MLsnd, y->MLpair.MLsnd);
-    r->MLbool = fst->MLbool && snd->MLbool;
-    free(fst);
-    free(snd);
+    v1 = MLequal(a->MLpair.MLfst, b->MLpair.MLfst);
+    v2 = MLequal(a->MLpair.MLsnd, b->MLpair.MLsnd);
+    r->MLbool = v1->MLbool && v2->MLbool;
+    free(v1);
+    free(v2);
     break;
   case MLLIST :
     if(!a->MLlist && !b->MLlist ){
@@ -169,17 +170,16 @@ MLvalue* MLequal(MLvalue* a, MLvalue* b)
       return r;
     }
     else {
-      MLvalue* v1 = MLequal(a->MLlist->MLcar, b->MLlist->MLcar);
-      MLvalue* v2 = MLequal(a->MLlist->MLcdr, b->MLlist->MLcdr);
+      v1 = MLequal(a->MLlist->MLcar, b->MLlist->MLcar);
+      v2 = MLequal(a->MLlist->MLcdr, b->MLlist->MLcdr);
       r->MLbool = v1->MLbool && v2->MLbool;
       free(v1);
       free(v2);
     }
     break;
-  default: break;
-  }
-  else {
+  default: 
     r->MLbool = (a->type == MLUNIT && b->type == MLUNIT);
+    break;
   }
   return r;
 }
@@ -327,19 +327,19 @@ void MLaddenv(MLvalue* f, MLvalue* v)
  ******************************************************************************/
 MLvalue* invokeMLfst(MLvalue * f, MLvalue * p)
 {
-  return MLfst(p);
+  return MLpairGetFst(p);
 }
 MLvalue* invokeMLsnd(MLvalue * f, MLvalue * p)
 {
-  return MLsnd(p);
+  return MLpairGetSnd(p);
 }
 MLvalue* invokeMLhd(MLvalue * f, MLvalue * p)
 {
-  return MLhd(p);
+  return MLlistGetCar(p);
 }
 MLvalue* invokeMLtl(MLvalue * f, MLvalue * p)
 {
-  return MLtl(p);
+  return MLlistGetCdr(p);
 }
 
 /*******************************************************************************
@@ -349,11 +349,11 @@ void init()
 {
   /* initialisation des constantes */
   MLtrue         = (MLvalue*)malloc(sizeof(MLvalue));
-  MLtrue->type   = MLbool;
+  MLtrue->type   = MLBOOL;
   MLtrue->MLbool = 1;
 
   MLfalse        = (MLvalue*)malloc(sizeof(MLvalue));
-  MLfalse->type  = MLbool;
+  MLfalse->type  = MLBOOL;
   MLfalse->MLbool= 0;
   
   MLlrp       = (MLvalue*)malloc(sizeof(MLvalue));
@@ -365,17 +365,17 @@ void init()
 
   MLfstPrimary              = malloc(sizeof(MLvalue));
   MLfstPrimary->type        = MLFUN;
-  MLfstPrimary->MLfun.invoke= invoke_MLfst; 
+  MLfstPrimary->MLfun.invoke= invokeMLfst; 
 
   MLsndPrimary              = malloc(sizeof(MLvalue));
   MLsndPrimary->type        = MLFUN;
-  MLsndPrimary->MLfun.invoke= invoke_MLsnd;
+  MLsndPrimary->MLfun.invoke= invokeMLsnd;
 
   MLhdPrimary               = malloc(sizeof(MLvalue));
   MLhdPrimary->type         = MLFUN;
-  MLhdPrimary->MLfun.invoke = invoke_MLhd;
+  MLhdPrimary->MLfun.invoke = invokeMLhd;
 
   MLtlPrimary               = malloc(sizeof(MLvalue));
   MLtlPrimary->type         = MLFUN;
-  MLtlPrimary->MLfun.invoke = invoke_MLtl;
+  MLtlPrimary->MLfun.invoke = invokeMLtl;
 }
