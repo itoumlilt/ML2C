@@ -24,7 +24,8 @@ MLvalue* MLprintRecursive(MLvalue* v);
  ******************************************************************************/
 MLvalue* newMLint(int v)
 {
-  MLvalue* r = (MLvalue*)malloc5
+  MLvalue* r = (MLvalue*)malloc(sizeof(MLvalue));
+  r->type    = MLINT;
   r->MLint   = x;
   return r;
 }

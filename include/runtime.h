@@ -1,5 +1,5 @@
 /**
- * ML2C - Runtime Implementation
+ * ML2C - Runtime Header
  *
  * @author Ilyas Toumlilt <toumlilt.ilyas@gmail.com>
  * @copyright (c) 2015, toumlilt
@@ -32,8 +32,8 @@ typedef struct _MLlist  MLList;
 typedef struct _MLfun   MLFun;
 
 struct _MLvalue {
-  int type;
-  union {
+  int type; /* takes a value from defines above */
+  union {   /* value's content */
     int MLunit;
     int MLint;
     int MLbool;
@@ -85,41 +85,89 @@ MLvalue* newMLlist(MLvalue* v, MLvalue* l);
 /*******************************************************************************
  * Basic Operations
  ******************************************************************************/
-MLvalue* MLaddint(MLvalue* x, MLvalue* y);
-MLvalue* MLsubint(MLvalue* x, MLvalue* y);
-MLvalue* MLmulint(MLvalue* x, MLvalue* y);
-MLvalue* MLdivint(MLvalue* x, MLvalue* y);
+/* all returns MLint */
+MLvalue* MLaddint(MLvalue* x, MLvalue* y); /* addition       */
+MLvalue* MLsubint(MLvalue* x, MLvalue* y); /* soustraction   */
+MLvalue* MLmulint(MLvalue* x, MLvalue* y); /* multiplication */
+MLvalue* MLdivint(MLvalue* x, MLvalue* y); /* division       */
 
 /*******************************************************************************
  * Comparison Operations
  ******************************************************************************/
-MLvalue* MLequal(MLvalue* a, MLvalue* b);
-MLvalue* MLltint(MLvalue *a, MLvalue *b);
-MLvalue* MLleint(MLvalue *a, MLvalue *b);
-MLvalue* MLgtint(MLvalue *a, MLvalue *b);
-MLvalue* MLgeint(MLvalue *a, MLvalue *b);
+/* all retunrs MLbool */
+MLvalue* MLequal(MLvalue* a, MLvalue* b); /* a =  b ? */
+MLvalue* MLltint(MLvalue* a, MLvalue* b); /* a <  b ? */
+MLvalue* MLleint(MLvalue* a, MLvalue* b); /* a <= b ? */
+MLvalue* MLgtint(MLvalue* a, MLvalue* b); /* a >  b ? */
+MLvalue* MLgeint(MLvalue* a, MLvalue* b); /* a >= b ? */
 
 /*******************************************************************************
  * String Operations
  ******************************************************************************/
+/**
+ * Concatenate two strings
+ *
+ * @param a first string ( MLstring )
+ * @param b second string ( MLstring )
+ * @return Mlvalue the concatenated string ( MLstring )
+ */
 MLvalue* MLconcat(MLvalue* a, MLvalue* b);
 
 /*******************************************************************************
  * Accessors
  ******************************************************************************/
+/**
+ * MLpair's first element getter 
+ *
+ * @param v ( MLpair )
+ * @return MLvalue* first element of the pair 
+ */
 MLvalue* MLpairGetFst(MLvalue* v);
+
+/**
+ * MLpair's second element getter
+ *
+ * @param v ( MLpair )
+ * @return MLvalue* second element of the pair
+ */
 MLvalue* MLpairGetSnd(MLvalue* v);
+
+/**
+ * MLlist's head getter
+ *
+ * @param v ( MLlist )
+ * @return MLvalue* head of the list
+ */
 MLvalue* MLlistGetCar(MLvalue* v);
+
+/**
+ * MLlist's cdr getter
+ *
+ * @param v ( MLlist )
+ * @return MLvalue* cdr of the list ( MLlist )
+ */
 MLvalue* MLlistGetCdr(MLvalue* v);
 
 /*******************************************************************************
  * Print Operations
  ******************************************************************************/
+/**
+ * print value's content on STDOUT
+ *
+ * @param v the MLvalue to print
+ * @return MLValue* the MLclr constant
+ */ 
 MLvalue* MLprint(MLvalue* v);
 
 /*******************************************************************************
  * Env Operations
  ******************************************************************************/
+/**
+ * Add's a value to an environment
+ *
+ * @param f function's environment ( MLfun )
+ * @param v the value to add 
+ */
 void MLaddenv(MLvalue* f, MLvalue* v);
 
 /*******************************************************************************
@@ -133,6 +181,7 @@ MLvalue* invokeMLtl(MLvalue * f, MLvalue * p);
 /*******************************************************************************
  * Main Setup Operations
  ******************************************************************************/
+
 void init();
 
 
