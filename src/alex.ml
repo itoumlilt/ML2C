@@ -508,7 +508,8 @@ and __ocaml_lex_main_rec lexbuf __ocaml_lex_state =
                             Lexing.lexeme_start lexbuf, Lexing.lexeme_end lexbuf)) )
 # 510 "alex.ml"
 
-  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_main_rec lexbuf __ocaml_lex_state
+  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
+      __ocaml_lex_main_rec lexbuf __ocaml_lex_state
 
 and string lexbuf =
     __ocaml_lex_string_rec lexbuf 38
@@ -517,38 +518,39 @@ and __ocaml_lex_string_rec lexbuf __ocaml_lex_state =
       | 0 ->
 # 148 "alex.mll"
       ( () )
-# 521 "alex.ml"
+# 522 "alex.ml"
 
   | 1 ->
 # 150 "alex.mll"
       ( string lexbuf )
-# 526 "alex.ml"
+# 527 "alex.ml"
 
   | 2 ->
 # 152 "alex.mll"
       ( store_string_char(char_for_backslash(get_lexeme_char lexbuf 1));
         string lexbuf )
-# 532 "alex.ml"
+# 533 "alex.ml"
 
   | 3 ->
 # 155 "alex.mll"
       ( store_string_char(char_for_decimal_code lexbuf 1);
          string lexbuf )
-# 538 "alex.ml"
+# 539 "alex.ml"
 
   | 4 ->
 # 158 "alex.mll"
       ( raise (Error
                 (Unterminated_string, 0, Lexing.lexeme_start lexbuf)) )
-# 544 "alex.ml"
+# 545 "alex.ml"
 
   | 5 ->
 # 161 "alex.mll"
       ( store_string_char(get_lexeme_char lexbuf 0);
         string lexbuf )
-# 550 "alex.ml"
+# 551 "alex.ml"
 
-  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_string_rec lexbuf __ocaml_lex_state
+  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
+      __ocaml_lex_string_rec lexbuf __ocaml_lex_state
 
 ;;
 

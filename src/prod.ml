@@ -65,9 +65,9 @@ initial_special_env :=
 initial_trans_env:= 
 
   let alpha = max_unknown () in
-  [",",("MLpair", Fun_type (Pair_type (alpha,alpha),
+  [",",("newMLpair", Fun_type (Pair_type (alpha,alpha),
                             Pair_type (alpha,alpha)))]@
-    ["::",("MLlist", Fun_type (Pair_type (alpha,alpha),
+    ["::",("newMLlist", Fun_type (Pair_type (alpha,alpha),
                                List_type (alpha)))]@
 
     (
@@ -121,7 +121,7 @@ let header_main  s =
     ["/**\n";
      " *  "^ s ^ ".c" ^ " produced by ml2c \n";
      " */\n";
-     "#include \<runtime.h\>\n"]
+     "#include \"runtime.h\"\n"]
 ;;
 
 let footer_main  s = 

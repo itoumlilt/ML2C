@@ -1,4 +1,5 @@
 ML2C - Projet 1 - CA
+Compilator OCaml -> C 
 
 == Participants : 1 ==
 
@@ -9,27 +10,12 @@ ML2C - Projet 1 - CA
    CREATED :
    -> makefile
    -> src/runtime.c :
-   -> include/runtime.h :
+   -> src/runtime.h :
 
    EDITED :
    -> src/prod.ml :
    -> src/trans/ml : 
 
-== Directives de 'makefile' ==
-
-   all : cree tous les executables, sans les éxecuter.
-
-   min_phase : crée l'executable bin/min_phase et l'execute.
-
-   directories : création des répertoires temporaires s'ils n'existent pas déjà
-   clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
-   cleanall : Suppression des répertoires et fichiers temporaires
-
 == Etat d'avancement ==
 
-   EXO 1 : Algorithme Phase - OK
-
-== Réponses ==
-
-== Soumission ==
-   mail to: <swan.dubois@lip6.fr> , avant dimanche soir
+   ML2C - OK

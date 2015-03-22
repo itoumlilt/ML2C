@@ -27,11 +27,12 @@ type token =
   | THEN
 
 open Parsing;;
+let _ = parse_error;;
 # 2 "asyn.mly"
 open Util;;
 open Types;;
 let make_apply e l = it_list (function a -> function b -> App (a,b)) e l;;
-# 35 "asyn.ml"
+# 36 "asyn.ml"
 let yytransl_const = [|
     0 (* EOF *);
   263 (* EQUAL *);
@@ -231,7 +232,7 @@ let yyact = [|
     Obj.repr(
 # 62 "asyn.mly"
           ( Expr _1 )
-# 235 "asyn.ml"
+# 236 "asyn.ml"
                : Types.ml_phrase))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 3 : string) in
@@ -239,7 +240,7 @@ let yyact = [|
     Obj.repr(
 # 64 "asyn.mly"
    ( Decl (Let(false,_2,_4)))
-# 243 "asyn.ml"
+# 244 "asyn.ml"
                : Types.ml_phrase))
 ; (fun __caml_parser_env ->
     let _3 = (Parsing.peek_val __caml_parser_env 3 : string) in
@@ -247,20 +248,20 @@ let yyact = [|
     Obj.repr(
 # 66 "asyn.mly"
    ( Decl (Let(true,_3,_5)))
-# 251 "asyn.ml"
+# 252 "asyn.ml"
                : Types.ml_phrase))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 68 "asyn.mly"
           ( raise End_of_file )
-# 257 "asyn.ml"
+# 258 "asyn.ml"
                : Types.ml_phrase))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'Simple_expr) in
     Obj.repr(
 # 76 "asyn.mly"
           ( _1 )
-# 264 "asyn.ml"
+# 265 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'Simple_expr) in
@@ -268,14 +269,14 @@ let yyact = [|
     Obj.repr(
 # 78 "asyn.mly"
    (make_apply _1 _2)
-# 272 "asyn.ml"
+# 273 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'Expr) in
     Obj.repr(
 # 80 "asyn.mly"
    (Ref _2)
-# 279 "asyn.ml"
+# 280 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'Simple_expr) in
@@ -283,7 +284,7 @@ let yyact = [|
     Obj.repr(
 # 82 "asyn.mly"
    (Pair (_1,_3))
-# 287 "asyn.ml"
+# 288 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'Simple_expr) in
@@ -291,7 +292,7 @@ let yyact = [|
     Obj.repr(
 # 84 "asyn.mly"
    (Cons (_1,_3))
-# 295 "asyn.ml"
+# 296 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'Simple_expr) in
@@ -299,7 +300,7 @@ let yyact = [|
     Obj.repr(
 # 86 "asyn.mly"
    (Binop (":=",_1,_3))
-# 303 "asyn.ml"
+# 304 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'Simple_expr) in
@@ -308,7 +309,7 @@ let yyact = [|
     Obj.repr(
 # 88 "asyn.mly"
    ( Binop (_2, _1,_3))
-# 312 "asyn.ml"
+# 313 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'Simple_expr) in
@@ -316,7 +317,7 @@ let yyact = [|
     Obj.repr(
 # 90 "asyn.mly"
           ( Binop ("=",_1,_3))
-# 320 "asyn.ml"
+# 321 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 4 : 'Expr) in
@@ -325,7 +326,7 @@ let yyact = [|
     Obj.repr(
 # 92 "asyn.mly"
           ( Cond(_2, _4, _6) )
-# 329 "asyn.ml"
+# 330 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 2 : 'Expr) in
@@ -333,7 +334,7 @@ let yyact = [|
     Obj.repr(
 # 94 "asyn.mly"
           ( Cond(_2, _4, Const Unit))
-# 337 "asyn.ml"
+# 338 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 4 : string) in
@@ -342,7 +343,7 @@ let yyact = [|
     Obj.repr(
 # 96 "asyn.mly"
           ( Letin (false,_2,_4,_6) )
-# 346 "asyn.ml"
+# 347 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _3 = (Parsing.peek_val __caml_parser_env 4 : string) in
@@ -351,7 +352,7 @@ let yyact = [|
     Obj.repr(
 # 98 "asyn.mly"
           ( Letin (true,_3,_5,_7) )
-# 355 "asyn.ml"
+# 356 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 2 : string) in
@@ -359,40 +360,40 @@ let yyact = [|
     Obj.repr(
 # 100 "asyn.mly"
           ( Abs(_2,_4) )
-# 363 "asyn.ml"
+# 364 "asyn.ml"
                : 'Expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'Struct_constant) in
     Obj.repr(
 # 104 "asyn.mly"
           ( Const _1 )
-# 370 "asyn.ml"
+# 371 "asyn.ml"
                : 'Simple_expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 106 "asyn.mly"
    (Var _1)
-# 377 "asyn.ml"
+# 378 "asyn.ml"
                : 'Simple_expr))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 108 "asyn.mly"
           ( Const  Unit )
-# 383 "asyn.ml"
+# 384 "asyn.ml"
                : 'Simple_expr))
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 110 "asyn.mly"
          ( Const Emptylist)
-# 389 "asyn.ml"
+# 390 "asyn.ml"
                : 'Simple_expr))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : 'Expr) in
     Obj.repr(
 # 112 "asyn.mly"
           ( _2 )
-# 396 "asyn.ml"
+# 397 "asyn.ml"
                : 'Simple_expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : string) in
@@ -400,7 +401,7 @@ let yyact = [|
     Obj.repr(
 # 114 "asyn.mly"
           ( Unop ( _1,_2))
-# 404 "asyn.ml"
+# 405 "asyn.ml"
                : 'Simple_expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'Simple_expr) in
@@ -408,35 +409,35 @@ let yyact = [|
     Obj.repr(
 # 120 "asyn.mly"
           ( _1 :: _2 )
-# 412 "asyn.ml"
+# 413 "asyn.ml"
                : 'Simple_expr_list))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'Simple_expr) in
     Obj.repr(
 # 122 "asyn.mly"
           ( [_1] )
-# 419 "asyn.ml"
+# 420 "asyn.ml"
                : 'Simple_expr_list))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : int) in
     Obj.repr(
 # 126 "asyn.mly"
           ( Int _1 )
-# 426 "asyn.ml"
+# 427 "asyn.ml"
                : 'Struct_constant))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : float) in
     Obj.repr(
 # 128 "asyn.mly"
           ( Float _1 )
-# 433 "asyn.ml"
+# 434 "asyn.ml"
                : 'Struct_constant))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
 # 130 "asyn.mly"
           ( String  _1 )
-# 440 "asyn.ml"
+# 441 "asyn.ml"
                : 'Struct_constant))
 (* Entry implementation *)
 ; (fun __caml_parser_env -> raise (Parsing.YYexit (Parsing.peek_val __caml_parser_env 0)))
@@ -465,4 +466,4 @@ let implementation (lexfun : Lexing.lexbuf -> token) (lexbuf : Lexing.lexbuf) =
 
 
 
-# 469 "asyn.ml"
+# 470 "asyn.ml"

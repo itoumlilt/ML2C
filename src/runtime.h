@@ -11,6 +11,10 @@
 #ifndef __RUNTIME_H_
 #define __RUNTIME_H_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 /*******************************************************************************
  * Types Definition
  ******************************************************************************/
@@ -27,7 +31,6 @@
  * Main Struct
  ******************************************************************************/
 typedef struct _MLvalue MLvalue;
-typedef struct _MLfun   MLFun;
 typedef struct _MLlist  MLList;
 typedef struct _MLfun   MLFun;
 
